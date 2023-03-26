@@ -1,0 +1,21 @@
+name: Build
+on:
+  push: [master]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Build & push Docker image 
+        uses: mr-smithers-excellent/docker-build-push@v6
+        with:
+          image: go-app-scratch
+          tags: latest
+          enableBuildKit: false
+          registry: ghcr.io
+          username: ${{github.actor}}
+          password: ${{secrets.GITHUB_TOKEN}}
+      

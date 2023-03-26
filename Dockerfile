@@ -1,4 +1,5 @@
 FROM golang:1.17.0-alpine3.14 as build
+LABEL org.opencontainers.image.source="https://github.com/Nikki18977/0101_scratch"
 
 ENV USER=appuser
 ENV UID=10001
@@ -18,7 +19,7 @@ COPY app/ .
 RUN go mod download
 RUN go mod verify
 
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-w -s" -o /go/bin/app.bin cmd/main.go
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build  -o /go/bin/app.bin cmd/main.go
 
 FROM scratch
 
