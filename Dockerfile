@@ -13,21 +13,27 @@ RUN adduser \
     --uid "${UID}" \
     "${USER}"
 
+RUN mkdir /uploads
+
 WORKDIR  /go/src/app
+COPY  app/ .
 
-COPY app/ .
-RUN go mod download
-RUN go mod verify
-
+RUN go mod download && go mod verify
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build  -o /go/bin/app.bin cmd/main.go
 
+FROM busybox:1.35.0-uclibc as busybox
 FROM scratch
 
+COPY --from=busybox /bin/sh /bin/sh
+COPY --from=busybox /bin/chown /bin/chown
+COPY --from=build /uploads /uploads
 COPY --from=build /etc/passwd /etc/passwd
 COPY --from=build /etc/group /etc/group
 COPY --from=build /go/bin/app.bin /go/bin/app.bin
 
-VOLUME [ "/upload" ]
+RUN chown -R appuser:appuser /uploads 
+    
+VOLUME [ "/uploads" ]
 
 USER appuser:appuser
 

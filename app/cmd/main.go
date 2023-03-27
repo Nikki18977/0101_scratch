@@ -50,7 +50,7 @@ func main() {
 		_, _ = writer.Write([]byte("OK"))
 	})
 
-	addr := net.JoinHostPort("localhost", "9999")
+	addr := net.JoinHostPort("0.0.0.0", "9999")
 	log.Printf("starting: listen and serve on: %s", addr)
 	server := &http.Server{Addr: addr, Handler: router}
 	serverCtx, serverStopCtx := context.WithCancel(context.Background())
